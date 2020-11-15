@@ -22,17 +22,7 @@ $ docker-compose build --no-cache
 
 Now you are ready to start the development.
 
-
-### Dev Environment
-
 ```
 $ docker-compose up -d
-$ cd frontend && npm run dev
 ```
-
-### Prod Environment
-
-```
-$ docker-compose up -d
-$ cd frontend && npm run build
-```
+**Note:** Backend app runs at **8000** port and frontend app runs at **8080** port.
