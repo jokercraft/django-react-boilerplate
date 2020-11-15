@@ -12,7 +12,7 @@
       networks:
         - main
       restart: on-failure
-    web:
+    backend:
       build: .
       command: bash -c "python manage.py migrate --no-input && python manage.py runserver 0.0.0.0:8000"
       volumes:
@@ -28,6 +28,18 @@
       restart: always
       networks:
         - main
+    frontend:
+      build:
+        context: .
+        dockerfile: Dockerfile-frontend
+      ports:
+        - 8080:8080
+      depends_on:
+        - backend
+      env_file:
+        - ./.env
+      restart: always
+
     redis:
       restart: always
       image: redis:5

@@ -1,0 +1,11 @@
+FROM node:12
+RUN mkdir /frontend
+WORKDIR /frontend
+COPY ./frontend/package*.json ./
+COPY ./frontend/babel.config.json ./
+COPY ./frontend/webpack.config.js ./
+COPY ./frontend ./
+
+RUN npm install
+EXPOSE 8080
+CMD ["npm", "run", "dev"]
