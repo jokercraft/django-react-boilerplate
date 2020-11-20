@@ -32,13 +32,17 @@
       build:
         context: .
         dockerfile: Dockerfile-frontend
+      expose: 
+        - "3000"
       ports:
-        - 8080:8080
+        - 3000:3000
       depends_on:
         - backend
       env_file:
         - ./.env
       restart: always
+      networks:
+        - main
 
     redis:
       restart: always

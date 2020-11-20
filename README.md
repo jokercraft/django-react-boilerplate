@@ -25,4 +25,4 @@ Now you are ready to start the development.
 ```
 $ docker-compose up -d
 ```
-**Note:** Backend app runs at **8000** port and frontend app runs at **8080** port.
+**Note:** Backend app runs at **8000** port and frontend app runs at **3000** port.
