@@ -1,0 +1,99 @@
+  version: '3'
+
+  services:
+    db:
+      image: postgres
+      ports:
+        - "5432:5432"
+      volumes:
+        - "postgresql-data:/var/lib/postgresql/data"
+      env_file:
+        - ./.env
+      networks:
+        - main
+      restart: on-failure
+    backend:
+      build: .
+      command: bash -c "python manage.py migrate --no-input && python manage.py runserver 0.0.0.0:8000"
+      volumes:
+        - .:/app
+      ports:
+        - 8000:8000
+      depends_on:
+        - db
+        - rabbitmq
+        - redis
+      env_file:
+        - ./.env
+      restart: always
+      networks:
+        - main
+    frontend:
+      build:
+        context: .
+        dockerfile: Dockerfile-frontend
+      expose: 
+        - "3000"
+      ports:
+        - 3000:3000
+      depends_on:
+        - backend
+      env_file:
+        - ./.env
+      restart: always
+      networks:
+        - main
+
+    redis:
+      restart: always
+      image: redis:5
+      expose:
+        - "6379"
+      networks:
+        - main
+    rabbitmq:
+      restart: always
+      image: rabbitmq:3.7.5-management
+      hostname: rabbit
+      expose:
+        - '5672'
+      ports:
+        - "15672:15672"
+      networks:
+        - main
+    worker:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      command: bash -c "celery -A app worker -l DEBUG"
+      volumes:
+        - .:/app
+      depends_on:
+        - db
+        - rabbitmq
+        - redis
+      env_file:
+        - ./.env
+      networks:
+        - main
+    beat:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      command: bash -c "celery -A app beat -l DEBUG"
+      volumes:
+        - .:/app
+      depends_on:
+        - db
+        - rabbitmq
+        - redis
+      env_file:
+        - ./.env
+      networks:
+        - main
+
+  volumes:
+    postgresql-data:
+
+  networks:
+    main:

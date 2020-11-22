@@ -1,0 +1,7 @@
+FROM node:12
+RUN mkdir /frontend
+WORKDIR /frontend
+COPY ./frontend ./
+
+RUN npm install
+CMD ["npm", "start"]
